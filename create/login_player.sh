@@ -1,1 +1,2 @@
 curl -X POST -H "Content-Type: application/json" -d '{"username":"Henk","password":"henk"}' localhost:8000/memory/login
+read -p "Press enter to exit"

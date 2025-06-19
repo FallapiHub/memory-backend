@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: arial;
+    background-color: #222222;
+    color: white;
+}
+
+div.game{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.board{
+    display: grid;
+    width: 40vw;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+.sidebar{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.tile:hover{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    background-color: #d66b43;
+    box-shadow: 0px 0px 0px black;
+    border-width: 3px;
+    border-radius: 16px;
+    aspect-ratio: 1
+}
+
+.tile{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+    border-width: 2px;
+    background-color: coral;
+    box-shadow: 2px 2px 0px black;
+    border-radius: 16px;
+    aspect-ratio: 1;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.found{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+    border-width: 2px;
+    background-color: #7af153;
+    box-shadow: 2px 2px 0px black;
+    border-radius: 16px;
+    aspect-ratio: 1
+}
+
+.open{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+    border-width: 2px;
+    background-color: #f1e453;
+    box-shadow: 2px 2px 0px black;
+    border-radius: 16px;
+    aspect-ratio: 1
+}

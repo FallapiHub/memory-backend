@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meowmory</title>
+  <link rel="stylesheet" href="styleshit.css">
+
+</head>
+<body>
+<h1>Javascript memory</h1>
+<p>Verlopen tijd: 0 seconden</p>
+<p id="gevondenKaarten">Gevonden kaarten: 0</p>
+<p>Resterende toontijd: 10 seconden</p>
+<div class="game">
+  <div class="board" id="board">
+  </div>
+  <div class="sidebar">
+    <h2>Top 5:</h2>
+    <ol>
+      <ul>1. Fillip</ul>
+      <ul>2. Fillip</ul>
+      <ul>3. Fillip</ul>
+      <ul>4. Fillip</ul>
+      <ul>5. Fillip</ul>
+    </ol>
+    <div class="instellingen">
+      <label typeof="gamemode">Gamemode</label>
+      <select name="gamemode" id="gamemode">
+        <option value="cats">Cats</option>
+        <option value="letters">Letters</option>
+      </select><br>
+      <label typeof="grootte">grootte</label>
+      <select name="grootte" id="grootte">
+        <option value="6">Large</option>
+        <option value="4">Normal</option>
+        <option value="2">Small</option>
+      </select><br>
+      <label typeof="karakter">Karakter</label>
+      <input type="text" name="karakter" id="karakter"><br>
+      <label typeof="kaartkleur">Kaart kleur</label>
+      <input type="color" name="kaartkleur" id="kaartkleur"><br>
+      <label typeof="openkleur">Open kaarten kleur</label>
+      <input type="color" name="openkleur" id="openkleur"><br>
+      <label typeof="gevondenkleur">Gevonden kaarten kleur</label>
+      <input type="color" name="gevondenkleur" id="gevondenkleur"><br>
+      <input type="submit"  id="startgame" value="Start spel">
+    </div>
+    <p id="dawg">hoi</p>
+  </div>
+</div>
+
+<script src="memory.js">
+</script>
+
+
+</body>
+</html>
