@@ -123,6 +123,9 @@ function getTopScores(){
                 const score = document.createElement("ul");
                 score.innerText = `${i + 1}. ${json[i].username} ${json[i].score}`;
                 list.appendChild(score);
+                if(i === 4){
+                    return
+                }
             }
         })
         .catch(error => {
