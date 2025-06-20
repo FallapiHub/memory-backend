@@ -31,9 +31,14 @@
     notification.innerHTML=""
 
     const check = () => {
-        let password = document.getElementById('password').value;
-        let username = document.getElementById('username').value;
-        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value.trim();
+        let username = document.getElementById('username').value.trim();
+        let email = document.getElementById('email').value.trim();
+
+        if (!username || !password || !email) {
+            notification.innerHTML = "Vul alles in";
+            return;
+        }
 
 
         fetch('http://localhost:8000/memory/register', {
@@ -43,15 +48,22 @@
             },
             body: JSON.stringify({username: username, password: password, email : email}),
         })
-            .then(resp => {
+            .then(async resp => {
                 if (!resp.ok) {
                     throw new Error("Registratie mislukt");
                 }
-                return resp.json();
+                console.log(resp)
+
+                const raw = await resp.text();
+
+                if (raw){
+                    return JSON.parse(raw);
+                } else{
+                    return null;
+                }
             })
             .then(json => {
                 console.log(json)
-                localStorage.setItem("jwt", json)
                 notification.innerHTML = "Je account is aangemaakt!";
                 //window.location.href = 'memory.html';
             })

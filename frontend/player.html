@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account</title>
+</head>
+<body>
+
+<h2>Account</h2>
+
+
+<div class="container">
+    <p id="notification"></p>
+</div>
+</body>
+
+<script>
+    const notification = document.getElementById('notification');
+    const jwtData = localStorage.getItem("jwt");
+    const token = jwtData ? JSON.parse(jwtData).token : null;
+    const check = () => {
+
+
+        fetch('http://localhost:8000/player/games', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("je bent niet ingelogd");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                notification.innerHTML = json;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
+                window.location.href = 'index.html';
+
+            });
+    }
+    check()
+
+</script>
+</html>
