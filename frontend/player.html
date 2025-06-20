@@ -10,18 +10,26 @@
 
 
 <div class="container">
-    <p id="notification"></p>
+    <p id="player"> </p>
+    <p id="notification"> </p>
+    <p id="games"> </p>
+    <p id="preferences"> </p>
+    <p id="email"> </p>
 </div>
 </body>
 
 <script>
+    const player = document.getElementById('player');
     const notification = document.getElementById('notification');
+    const games = document.getElementById('games');
+    const preferences = document.getElementById('preferences');
+    const email = document.getElementById('email');
     const jwtData = localStorage.getItem("jwt");
     const token = jwtData ? JSON.parse(jwtData).token : null;
     const check = () => {
 
 
-        fetch('http://localhost:8000/player/games', {
+        fetch('http://localhost:8000/player', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -36,7 +44,7 @@
             })
             .then(json => {
                 console.log(json)
-                notification.innerHTML = json;
+                player.innerHTML =  JSON.stringify(json);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -44,6 +52,81 @@
                 window.location.href = 'index.html';
 
             });
+
+
+        fetch('http://localhost:8000/player/games', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("Kan spellen niet krijgen");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                games.innerHTML = JSON.stringify(json);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
+
+            });
+
+        fetch('http://localhost:8000/player/preferences', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("Kan preferences niet krijgen");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                preferences.innerHTML =  JSON.stringify(json);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
+            });
+
+        fetch('http://localhost:8000/player/email', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("Kan email niet krijgen");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                email.innerHTML =  JSON.stringify(json);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
+            });
+
+
+
+
+
+
+
     }
     check()
 
