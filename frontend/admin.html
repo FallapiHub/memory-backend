@@ -11,11 +11,18 @@
 
 <div class="container">
     <p id="notification"></p>
+    <p id="aggregate"></p>
+    <p id="players"></p>
+    <p id="dates"></p>
+
 </div>
 </body>
 
 <script>
     const notification = document.getElementById('notification');
+    const aggregate = document.getElementById('aggregate');
+    const players = document.getElementById('players');
+    const dates = document.getElementById('dates');
     const jwtData = localStorage.getItem("jwt");
     const token = jwtData ? JSON.parse(jwtData).token : null;
     const check = () => {
@@ -36,13 +43,57 @@
             })
             .then(json => {
                 console.log(json)
-                notification.innerHTML = JSON.stringify(json);
+                aggregate.innerHTML = JSON.stringify(json);
             })
             .catch(error => {
                 console.error('Error:', error);
                 notification.innerHTML = error;
                 window.location.href = 'index.html';
 
+            });
+
+        fetch('http://localhost:8000/admin/players', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("Kan spelers niet krijgen");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                players.innerHTML = JSON.stringify(json);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
+            });
+
+        fetch('http://localhost:8000/admin/dates', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            },
+        })
+            .then(resp => {
+                if (!resp.ok) {
+                    throw new Error("Kan dates niet krijgen");
+                }
+                return resp.json();
+            })
+            .then(json => {
+                console.log(json)
+                dates.innerHTML = JSON.stringify(json);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                notification.innerHTML = error;
             });
     }
     check()

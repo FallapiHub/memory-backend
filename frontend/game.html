@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>game</title>
+</head>
+<body>
+<p id="notification"></p>
+<h1>Top scores:</h1>
+<p id="topscores"></p>
+<h1>Alle scores:</h1>
+<p id="scores"></p>
+
+</body>
+</html>
+<script>
+    fetch('http://localhost:8000/memory/scores', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        },
+    })
+        .then(resp => {
+            if (!resp.ok) {
+                throw new Error("Kan scores niet krijgen");
+            }
+            return resp.json();
+        })
+        .then(json => {
+            console.log(json)
+            scores.innerHTML = JSON.stringify(json);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            notification.innerHTML = error;
+        });
+
+    fetch('http://localhost:8000/memory/top-scores', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        },
+    })
+        .then(resp => {
+            if (!resp.ok) {
+                throw new Error("Kan top-scores niet krijgen");
+            }
+            return resp.json();
+        })
+        .then(json => {
+            console.log(json)
+            topscores.innerHTML = JSON.stringify(json);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            notification.innerHTML = error;
+        });
+</script>

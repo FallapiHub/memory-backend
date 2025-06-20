@@ -49,7 +49,7 @@
                 console.log(json)
                 localStorage.setItem("jwt", JSON.stringify(json))
                 notification.innerHTML = "Je bent ingelogd";
-                //window.location.href = 'memory.html';
+                window.location.href = 'memory.html';
             })
             .catch(error => {
                 console.error('Error:', error);

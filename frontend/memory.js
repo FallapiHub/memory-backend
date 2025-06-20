@@ -1,6 +1,8 @@
 const test = document.getElementById("dawg")
 const gevondenKaarten = document.getElementById("gevondenKaarten")
 const startGame = document.getElementById("startgame")
+const jwtData = localStorage.getItem("jwt");
+const token = jwtData ? JSON.parse(jwtData).token : null;
 
 
 //kleuren
@@ -97,6 +99,35 @@ function boardCreator(size){
         tileDiv.style.backgroundColor = kaartKleur;
         board.appendChild(tileDiv);
     }
+    scoreBoard();
+}
+
+function scoreBoard(){
+    fetch('http://localhost:8000/memory/top-scores', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        },
+    })
+        .then(resp => {
+            if (!resp.ok) {
+                throw new Error("Kan top-scores niet krijgen");
+            }
+            return resp.json();
+        })
+        .then(json => {
+            const list = document.getElementById("top-scores");
+            list.innerHTML = "";
+
+            for (let i = 0; i < json.length; i++) {
+                const score = document.createElement("ul");
+                score.innerText = `${i + 1}. ${json[i].username}`;
+                list.appendChild(score);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 function boardTileSlice(size){
@@ -142,7 +173,47 @@ function reset(){
     }
 }
 
+function setPreferences(){
+    //curl -v -H @player_token -X POST -d '{"id":1,"api":"dogs","color_found":"#ff0","color_closed":"#0ff"}' localhost:8000/player/preferences
+    kaartKleur = document.getElementById("kaartkleur").value
+    openKleur =  document.getElementById("openkleur").value
+    gevondenKleur =  document.getElementById("gevondenkleur").value
+    gamemode =  document.getElementById("gamemode").value
+
+
+    fetch('http://localhost:8000/player/preferences', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"api":gamemode, "color_found":gevondenKleur, "color_closed": kaartKleur }),
+    })
+        .then(async resp => {
+            if (!resp.ok) {
+                throw new Error("preferences aanpassen mislukt");
+            }
+            console.log(resp)
+
+            const raw = await resp.text();
+
+            if (raw){
+                return JSON.parse(raw);
+            } else{
+                return null;
+            }
+        })
+        .then(json => {
+            console.log(json)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+
+        });
+}
+
 startGame.addEventListener("click", function () {
+    setPreferences()
     reset()
 })
 
@@ -313,5 +384,25 @@ function removeTiles(){
     }
     handlers.length = 0;
 }
+fetch('http://localhost:8000/player', {
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/json'
+    },
+})
+    .then(resp => {
+        if (!resp.ok) {
+            throw new Error("je bent niet ingelogd");
+        }
+        return resp.json();
+    })
+    .then(json => {
+        console.log(json)
+        alphabetTileSetup()
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        window.location.href = 'index.html';
 
-alphabetTileSetup()
+    });
