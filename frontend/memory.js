@@ -1,18 +1,21 @@
-const test = document.getElementById("dawg")
-const gevondenKaarten = document.getElementById("gevondenKaarten")
-const startGame = document.getElementById("startgame")
+const test = document.getElementById("dawg");
+const gevondenKaarten = document.getElementById("gevondenKaarten");
+const startGame = document.getElementById("startgame");
 const jwtData = localStorage.getItem("jwt");
 const token = jwtData ? JSON.parse(jwtData).token : null;
+const timer = document.getElementById("timer");
+
+let id;
 
 let gamemode = "letters";
 let karakter = "*";
 let grootte = "4";
-let kaartKleur = "#ff7f50"
-let openKleur = "#1ec5e5"
-let gevondenKleur = "#7af153"
-document.getElementById("openkleur").value = openKleur
-document.getElementById("karakter").value = karakter
-document.getElementById("grootte").value = grootte
+let kaartKleur = "#ff7f50";
+let openKleur = "#1ec5e5";
+let gevondenKleur = "#7af153";
+document.getElementById("openkleur").value = openKleur;
+document.getElementById("karakter").value = karakter;
+document.getElementById("grootte").value = grootte;
 
 
 
@@ -114,10 +117,11 @@ function getTopScores(){
         .then(json => {
             const list = document.getElementById("top-scores");
             list.innerHTML = "";
+            console.log(json)
 
             for (let i = 0; i < json.length; i++) {
                 const score = document.createElement("ul");
-                score.innerText = `${i + 1}. ${json[i].username}`;
+                score.innerText = `${i + 1}. ${json[i].username} ${json[i].score}`;
                 list.appendChild(score);
             }
         })
@@ -138,14 +142,67 @@ function shuffleArray(array) {
     }
     return array;
 }
-// gamemode =  document.getElementById("gamemode").value;
-// gevondenKleur =  document.getElementById("gevondenkleur").value;
-// kaartKleur = document.getElementById("kaartkleur").value;
+
+let startTime;
+let stopwatchInterval;
+let elapsedTime = 0;
+
+function startTimer() {
+    if (!stopwatchInterval) {
+        startTime = new Date().getTime();
+        stopwatchInterval = setInterval(updateTimer, 1000);
+    }
+}
+
+function stopTimer() {
+    clearInterval(stopwatchInterval);
+    stopwatchInterval = null;
+}
+
+function updateTimer() {
+    let currentTime = new Date().getTime();
+    elapsedTime = currentTime - startTime;
+    let seconds = Math.floor(elapsedTime / 1000);
+    timer.innerHTML = "Verlopen tijd: " + seconds;
+}
+
+function hasWon(){
+    if(countTiles === grootte*grootte){
+        test.innerText="je hebt gewonnen"
+        stopTimer()
+        let score = elapsedTime / 100;
+        test.innerText="won" + score;
+
+        //curl -X POST -d '{"id":3,"score":131,"api":"clouds","color_found":"blue", "color_closed":"black" }' localhost:8000/game/save
+        fetch('http://localhost:8000/game/save', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"id":id, "score":score, "api":gamemode, "color_found":gevondenKleur, "color_closed": kaartKleur }),
+        })
+            .then(async resp => {
+                if (!resp.ok) {
+                    throw new Error("Spelscore opslaan mislukt");
+                }
+                console.log(resp)
 
 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+            });
+    }
+
+}
 
 
 async function reset(){
+    stopTimer()
+    timer.innerHTML = "Verlopen tijd: 0";
+
     removeTiles()
     gameTileValues = []
     countTiles = 0
@@ -247,75 +304,6 @@ function setPreferences(){
         });
 }
 
-// async function getPreferences(){
-//     try{
-//         const resp = await fetch('http://localhost:8000/player/preferences', {
-//             method: 'GET',
-//             headers: {
-//                 'Authorization': 'Bearer ' + token,
-//                 'Accept': 'application/json'
-//             },
-//         });
-//         if (!resp.ok) {
-//             throw new Error("Kan preferences niet krijgen");
-//         }
-//         const json = await resp.json();
-//         console.log(json)
-//
-//
-//         gamemode = json.preferred_api;
-//         gevondenKleur = json.color_found;
-//         kaartKleur = json.color_closed;
-//
-//
-//
-//     }catch (error){
-//         console.error('Error:', error);
-//     }
-// }
-
-
-
-// function getPreferences(){
-//     fetch('http://localhost:8000/player/preferences', {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': 'Bearer ' + token,
-//             'Accept': 'application/json'
-//         },
-//     })
-//         .then(resp => {
-//             if (!resp.ok) {
-//                 throw new Error("Kan preferences niet krijgen");
-//             }
-//             return resp.json();
-//         })
-//         .then(json => {
-//             console.log(json)
-//
-//             //kleuren
-//             let gamemode = "letters";
-//             let karakter = "*";
-//             let grootte = "4";
-//             let kaartKleur = "#ff7f50"
-//             let openKleur = "#1ec5e5"
-//             let gevondenKleur = "#7af153"
-//
-//             gamemode = json[0].api;
-//             gevondenKleur = json[0].color_found;
-//             kaartKleur = json[0].color_closed;
-//
-//             document.getElementById("kaartkleur").value = kaartKleur
-//             document.getElementById("openkleur").value =  openKleur
-//             document.getElementById("gevondenkleur").value = gevondenKleur
-//             document.getElementById("karakter").value = karakter
-//             document.getElementById("grootte").value = grootte
-//             document.getElementById("gamemode").value = gamemode
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//         });
-// }
 
 startGame.addEventListener("click", function () {
     setPreferences()
@@ -334,6 +322,7 @@ function checkAlphabetTiles(){
         TileB.style.backgroundColor = gevondenKleur
         countTiles = countTiles + 2
         gevondenKaarten.innerText = "Gevonden kaarten: " + countTiles
+        hasWon()
     }
     else{
 
@@ -388,7 +377,10 @@ function checkCatTiles(){
         correctTiles.push(TileA)
         correctTiles.push(TileB)
         countTiles = countTiles + 2
+
         gevondenKaarten.innerText = "Gevonden kaarten: " + countTiles
+        hasWon()
+
     }
     else{
 
@@ -448,6 +440,7 @@ function catTileSetup(){
         tile[i].innerText = karakter;
         tile[i].style.backgroundColor = kaartKleur
     }
+    startTimer()
 }
 
 function alphabetTileSetup(){
@@ -466,6 +459,7 @@ function alphabetTileSetup(){
         tile[i].innerText = karakter;
         tile[i].style.backgroundColor = kaartKleur
     }
+    startTimer()
 }
 
 
@@ -504,8 +498,8 @@ fetch('http://localhost:8000/player', {
     })
     .then(json => {
         console.log(json)
+        id = json.id;
         reset()
-        //alphabetTileSetup()
     })
     .catch(error => {
         console.error('Error:', error);
