@@ -2,15 +2,15 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
+    <title>Registratie</title>
 </head>
 <body>
 
-<h2>Login</h2>
+<h2>Registratie</h2>
+<button type="button" id="login">Al een account?</button><br><br>
 
 
 <div class="container">
-    <button type="button" id="register">Nog geen account?</button><br><br>
 
     <label for="username"><b>Gebruikersnaam:</b></label>
     <input type="text" placeholder="Doe gebruikersnaam hier" name="username" id="username" required>
@@ -18,8 +18,11 @@
     <label for="password"><b>Wachtwoord:</b></label>
     <input type="password" placeholder="Wachtwoord hiero" name="password" id="password" required>
 
+    <label for="email"><b>E-mail:</b></label>
+    <input type="email" placeholder="Email hierski" name="email" id="email" required>
+
     <p id="notification"></p>
-    <button type="button" id="submit">Log in</button>
+    <button type="button" id="submit">Registreer</button>
 </div>
 </body>
 
@@ -30,27 +33,27 @@
     const check = () => {
         let password = document.getElementById('password').value;
         let username = document.getElementById('username').value;
-        localStorage.setItem("cat", "meow")
+        let email = document.getElementById('email').value;
 
 
-        fetch('http://localhost:8000/memory/login', {
+        fetch('http://localhost:8000/memory/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({username: username, password: password}),
+            body: JSON.stringify({username: username, password: password, email : email}),
         })
             .then(resp => {
                 if (!resp.ok) {
-                    throw new Error("Login mislukt");
+                    throw new Error("Registratie mislukt");
                 }
                 return resp.json();
             })
             .then(json => {
                 console.log(json)
                 localStorage.setItem("jwt", json)
-                notification.innerHTML = "Je bent ingelogd";
-                window.location.href = 'memory.html';
+                notification.innerHTML = "Je account is aangemaakt!";
+                //window.location.href = 'memory.html';
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -60,8 +63,8 @@
     }
 
     document.getElementById('submit').addEventListener('click', c => check())
-    document.getElementById('register').addEventListener('click', c => {
-        window.location.href = 'register.html';
+    document.getElementById('login').addEventListener('click', c => {
+        window.location.href = 'index.html';
     })
 
 </script>
