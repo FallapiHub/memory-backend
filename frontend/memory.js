@@ -1,4 +1,3 @@
-const test = document.getElementById("dawg");
 const gevondenKaarten = document.getElementById("gevondenKaarten");
 const startGame = document.getElementById("startgame");
 const jwtData = localStorage.getItem("jwt");
@@ -171,10 +170,9 @@ function updateTimer() {
 
 function hasWon(){
     if(countTiles === grootte*grootte){
-        test.innerText="je hebt gewonnen"
+        gevondenKaarten.innerText="je hebt gewonnen!"
         stopTimer()
         let score = elapsedTime / 100;
-        test.innerText="won" + score;
 
         //curl -X POST -d '{"id":3,"score":131,"api":"clouds","color_found":"blue", "color_closed":"black" }' localhost:8000/game/save
         fetch('http://localhost:8000/game/save', {
@@ -312,6 +310,11 @@ startGame.addEventListener("click", function () {
     setPreferences()
     reset()
 })
+
+function clickStart(){
+    setPreferences()
+    reset()
+}
 
 
 function checkAlphabetTiles(){
