@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Account</title>
-</head>
+    <title>Meowmory</title>
+    <link rel="stylesheet" href="styleshit.css"></head>
 <body>
 <div class="container">
     <h1>Account info</h1>
@@ -46,6 +46,19 @@
             .then(json => {
                 console.log(json)
                 player.innerHTML =  JSON.stringify(json);
+                // console.log(json)
+                //
+                // list.innerHTML = "";
+                // console.log(json)
+                //
+                // for (let i = 0; i < json.length; i++) {
+                //     const score = document.createElement("ul");
+                //     score.innerText = `${i + 1}. ${json[i].username} ${json[i].score}`;
+                //     list.appendChild(score);
+                //     if(i === 4){
+                //         return
+                //     }
+                // }
             })
             .catch(error => {
                 console.error('Error:', error);
