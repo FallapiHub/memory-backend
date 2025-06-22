@@ -6,16 +6,30 @@
     <link rel="stylesheet" href="styleshit.css"></head>
 <body>
 <div class="container">
-    <h1>Account info</h1>
     <p id="notification"> </p>
-    <h2>player</h2>
-    <p id="player"> </p>
-    <h2>games</h2>
-    <p id="games"> </p>
-    <h2>preferences</h2>
-    <p id="preferences"> </p>
-    <h2>email</h2>
-    <p id="email"> </p>
+    <a href="memory.html">Play memory</a>
+    <h1>Player information</h1>
+    <p id="username">Loading...</p>
+    <label typeof="email">E-mail:</label>
+    <input type="email" placeholder="Email hier" name="email" id="email">
+    <button class="generalbutton" id="update">Update E-mail</button>
+    <button class="generalbutton" id="logout">logout</button>
+    <h2>Your Preferences</h2>
+    <div class="instellingen">
+        <label typeof="gamemode">Gamemode</label>
+        <select name="gamemode" id="gamemode">
+            <option value="cats">Cats</option>
+            <option value="letters">Letters</option>
+        </select><br>
+        <label typeof="kaartkleur">Kaart kleur</label>
+        <input type="color" name="kaartkleur" id="kaartkleur"><br>
+        <label typeof="gevondenkleur">Gevonden kaarten kleur</label>
+        <input type="color" name="gevondenkleur" id="gevondenkleur"><br>
+        <input type="submit" id="startgame" class="button" value="Change preferences">
+        <input type="submit" id="startgamemobile" class="button" value="Change preferences">
+    </div>
+    <h2>Game History</h2>
+    <p id="games">Loading...</p>
 </div>
 </body>
 
@@ -23,10 +37,18 @@
     const player = document.getElementById('player');
     const notification = document.getElementById('notification');
     const games = document.getElementById('games');
-    const preferences = document.getElementById('preferences');
-    const email = document.getElementById('email');
+    let email = document.getElementById('email');
+    const username = document.getElementById('username');
     const jwtData = localStorage.getItem("jwt");
     const token = jwtData ? JSON.parse(jwtData).token : null;
+    let gamemode = document.getElementById('gamemode');
+    let kaartkleur = document.getElementById('kaartkleur');
+    let gevondenkleur = document.getElementById('gevondenkleur');
+    const submit1 = document.getElementById('startgamemobile');
+    const submit2 = document.getElementById('startgame');
+    const logout = document.getElementById('logout');
+    const update = document.getElementById('update');
+
     const check = () => {
 
 
@@ -45,20 +67,10 @@
             })
             .then(json => {
                 console.log(json)
-                player.innerHTML =  JSON.stringify(json);
-                // console.log(json)
-                //
-                // list.innerHTML = "";
-                // console.log(json)
-                //
-                // for (let i = 0; i < json.length; i++) {
-                //     const score = document.createElement("ul");
-                //     score.innerText = `${i + 1}. ${json[i].username} ${json[i].score}`;
-                //     list.appendChild(score);
-                //     if(i === 4){
-                //         return
-                //     }
-                // }
+                //player.innerHTML =  JSON.stringify(json);
+                username.innerText = "Username: "+json.name;
+                email.value = json.email;
+
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -83,7 +95,14 @@
             })
             .then(json => {
                 console.log(json)
-                games.innerHTML = JSON.stringify(json);
+                //games.innerHTML = JSON.stringify(json);
+                games.innerText="";
+
+                for (let i = 0; i < json.length; i++) {
+                    const score = document.createElement("p");
+                    score.innerHTML = `${json[i].date.date}: gamemode ${json[i].api}: score ${json[i].score} Points`;
+                    games.appendChild(score);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -106,43 +125,100 @@
             })
             .then(json => {
                 console.log(json)
-                preferences.innerHTML =  JSON.stringify(json);
+                //preferences.innerHTML =  JSON.stringify(json);
+                gamemode.value = json.preferred_api;
+                kaartkleur.value = json.color_closed;
+                gevondenkleur.value = json.color_found;
+
             })
             .catch(error => {
                 console.error('Error:', error);
                 notification.innerHTML = error;
             });
-
-        fetch('http://localhost:8000/player/email', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            },
-        })
-            .then(resp => {
-                if (!resp.ok) {
-                    throw new Error("Kan email niet krijgen");
-                }
-                return resp.json();
-            })
-            .then(json => {
-                console.log(json)
-                email.innerHTML =  JSON.stringify(json);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                notification.innerHTML = error;
-            });
-
-
-
-
-
-
 
     }
     check()
+
+
+    function savePreferences(){
+        gamemode = document.getElementById('gamemode').value;
+        kaartkleur = document.getElementById('kaartkleur').value;
+        gevondenkleur = document.getElementById('gevondenkleur').value;
+        fetch('http://localhost:8000/player/preferences', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"api":gamemode, "color_found":gevondenkleur, "color_closed": kaartkleur }),
+        })
+            .then(async resp => {
+                if (!resp.ok) {
+                    throw new Error("preferences aanpassen mislukt");
+                }
+                console.log(resp)
+
+                const raw = await resp.text();
+
+                if (raw){
+                    return JSON.parse(raw);
+                } else{
+                    return null;
+                }
+            })
+            .then(json => {
+                console.log(json)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+            });
+    }
+    function removejwt(){
+        localStorage.removeItem('jwt');
+        window.location.href = 'index.html';
+    }
+
+    function updatemail(){
+        email = document.getElementById('email').value;
+        fetch('http://localhost:8000/player/email', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"email":email}),
+        })
+            .then(async resp => {
+                if (!resp.ok) {
+                    throw new Error("preferences aanpassen mislukt");
+                }
+                console.log(resp)
+
+                const raw = await resp.text();
+
+                if (raw){
+                    return JSON.parse(raw);
+                } else{
+                    return null;
+                }
+            })
+            .then(json => {
+                console.log(json)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+            });
+    }
+
+    submit1.addEventListener("click", savePreferences);
+    submit2.addEventListener("click", savePreferences);
+    logout.addEventListener("click", removejwt);
+    update.addEventListener("click", updatemail);
+
+
+
 
 </script>
 </html>
