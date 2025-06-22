@@ -1,0 +1,38 @@
+Leesopdracht toetsmoment 1 Fillip Ilic:
+
+1
+A) Ik denk dat ik het irritantst zou vinden als de knoppen of plaatjes verkeerde tekst of geen tekst hebben, omdat je dan de website moeilijk verder kunt gebruiken. 
+Het irritantste als ziend persoon vind ik tekst waar je op kan klikken, maar dat er geen context clues zijn dat dat klikbare tekst is. 
+
+B) Ook vind ik het vervelend wanneer onderdelen niet goed georganiseerd zijn. 
+Daarmee bedoel ik dat je iets zoekt van een bedrijf en dan hun hele pagina moet doorzoeken om dat ene stukje belangrijke info te vinden.
+
+2
+Zelf ben ik gewend aan desktop first design, omdat ik er nooit aan dacht om het eerst op mobiel te maken. Wel vind ik het heel logisch klinken en handig.
+Het is meer responsive omdat je het designt vanuit een perspectief waar je wel repsonsief MOET zijn. Wel moet ik zeggen dat als je een echt kunstwerk op je site wilt maken met javascript
+lijkt het mij beter om dat eerst op het web te maken. Zelfs dan nog is het misschien beter om eerst mobilefirst te maken. 
+
+
+Leesopdracht toetsmoment 2:
+1
+De eerste methode om te zien wat de impact van javascript op het web is, is om te kijken op de site stackoverflow te kijkem
+bij de tags van javascript. Daar was te zien dat javascript de meeste tags had, dus er werd het vaakst over gesproken.
+De tweede methode is om de javascript op paginas uit te zetten. Wanneer je dat knopje klikt zie je dat bijna alle
+websites javascript gebruiken en dat het essentieel is. Ik probeerde jsvascript uit te zetten op de site van https://scratch.mit.edu/
+Ik kreeg toen alleen te zien dat ik javascript weer aan moest zetten om de site te gebruiken.
+Ook wordt er gekeken naar mensen die last hebben van javascript, dat zijn er maar weinig. Youtube functioneert helemaal niet zonder javascript.
+Op de webversie van discord kon ik ook niks doen. Reddit werkt verassend goed. Ik had gedacht dat het misschien zou veranderen naar de oldschool look,
+maar hij ziet er hetzelfde uit als de moderne er normaal uit ziet.
+2
+ik denk niet dat javascript ooit wordt vervangen. Er is zoals eerder genoemd veel documentatie over js.
+er zijn veel experts erin, het is populair, overal beschikbaar en het is al overal. Ik zie er niet heel erg veel nut in
+om om te schakelen naar een nieuwere programmeer taal dat vrij onbekend is en ook niet beschikbaar is op alle browsers.
+
+
+Leesopdracht toetsmoment 3:
+JWTs zijn goed voor authenticatie en werken goed samen met request zoals api's.
+Je hoeft dus niet gegevens in de localstorage op te slaan, maar gewoon de session id.
+De JWT tokens zijn niet vaak goed geencrypt.
+Heel gevoelige gegevens kan je beter niet opslaan in tokens, omdat dat gevaarlijk is en gelekt kan worden.
+Ook is Javascript vaak nodig om toegang te krijgen van de localStorage en de tokens.
+Daarnaast past er niet veel data in de localStorage, waardoor je niet veel data mee kan geven in de token.
